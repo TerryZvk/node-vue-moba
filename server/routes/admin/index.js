@@ -1,35 +1,52 @@
 module.exports = (app) => {
   const express = require('express')
-  const router = express.Router()
-  const Category = require('../../models/Category')
+  const router = express.Router({
+    mergeParams: true
+  })
   
-  router.post('/categories',async (req, res) => {
-    const model = await Category.create(req.body)
-    res.send(model)
+  router.post('/',async (req, res) => {
+    const item = await req.Model.create(req.body)
+    res.send(item)
   })
 
-  router.get('/categories',async (req, res) => {
-    const items = await Category.find().populate('parent').limit(10)
+  router.get('/',async (req, res) => {
+    let queryOptions = {}
+    if(req.Model.modelName === 'Category') queryOptions.populate = 'parent'
+    const items = await req.Model.find().setOptions(queryOptions).limit(10)
     res.send(items)
   })
 
-  router.put('/categories/:id',async (req, res) => {
-    const model = await Category.findByIdAndUpdate(req.params.id, req.body)
-    res.send(model)
+  router.put('/:id',async (req, res) => {
+    const item = await req.Model.findByIdAndUpdate(req.params.id, req.body)
+    res.send(item)
   })
 
-  router.get('/categories/:id',async (req, res) => {
-    const model = await Category.findById(req.params.id)
-    res.send(model)
+  router.get('/:id',async (req, res) => {
+    const item = await req.Model.findById(req.params.id)
+    res.send(item)
   })
 
-  router.delete('/categories/:id',async (req, res) => {
-    await Category.findByIdAndDelete(req.params.id)
+  router.delete('/:id',async (req, res) => {
+    await req.Model.findByIdAndDelete(req.params.id)
     res.send({
       success: true
     })
   })
-  
 
-  app.use('/admin/api', router)
+  app.use('/admin/api/rest/:resource',async (req, res, next) => {
+    const modelName = require('inflection').classify(req.params.resource)
+    req.Model = require(`../../models/${modelName}`)
+    next()
+  }, router)
+
+  const multer = require('multer')
+  const upload = multer({
+    dest: __dirname + '/../../uploads'
+  })
+  app.post('/admin/api/upload',upload.single('file'), (req, res, next) => {
+    const file = req.file
+    file.url = `http://localhost:3000/uploads/${file.filename}`
+    res.send(file)
+  })
+
 }
