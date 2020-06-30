@@ -15,8 +15,8 @@
       <el-form-item label="标题" >
         <el-input v-model="model.title" />
       </el-form-item>
-       <el-form-item label="详情" >
-        <VueEditor type="textarea" v-model="model.body"></VueEditor>
+       <el-form-item label="内容" >
+        <mavon-editor :ishljs = "true"  v-model="model.body"></mavon-editor>
       </el-form-item>
       <el-form-item >
         <el-button type="primary" native-type="submit">保存</el-button>
@@ -27,12 +27,7 @@
 </template>
 
 <script>
-import { VueEditor } from "vue2-editor"
-
 export default {
-  components: {
-    VueEditor
-  },
   props: {
     id: {}
   },
@@ -40,7 +35,8 @@ export default {
     return{
       model: {
         title: '',
-        categories:[]
+        categories:[],
+        body: ''
       },
       categories: []
     }

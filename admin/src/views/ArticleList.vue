@@ -2,7 +2,7 @@
   <div class="home">
     <h1>文章列表</h1>
     <el-table :data="items">
-      <el-table-column prop="_id" label="ID" width="230"></el-table-column>
+      <!-- <el-table-column prop="_id" label="ID" width="230"></el-table-column> -->
       <el-table-column prop="title" label="标题"></el-table-column>
       <el-table-column
         label="操作"

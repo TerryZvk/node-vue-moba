@@ -3,7 +3,10 @@ import App from './App.vue'
 import './plugins/element.js'
 import router from './router'
 import http from './http'
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
+Vue.use(mavonEditor)
 Vue.config.productionTip = false
 Vue.prototype.$http = http
 
